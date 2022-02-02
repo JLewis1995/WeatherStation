@@ -3,14 +3,14 @@
     --secondary: #9caea9;
     --tertiary: #788585;
     --light-dark: #6f6866;
-    --dark: #38302e;
+    --dark: #302e38;
     --border-radius: .3rem;
   }
   
   * {
     box-sizing: border-box;
   }
-  
+
   body {
     background-color: var(--primary);
     margin: 0;
@@ -161,6 +161,10 @@
   
   .card-body {
     padding: 2.5%;
+  }
+
+  .uvi-class {
+    border-radius: 1.5rem;
   }
   
   /* FORM */
@@ -499,6 +503,3 @@
       flex: 0 0 100%;
     }
   }
-  
-  
-  

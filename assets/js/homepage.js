@@ -1,75 +1,142 @@
+// need to add local local storage to list - add class btn via javascript - on click reload that city's weather - need to add attribute when pulled from storage that is equal to the value of the city "data-city"
+
 var userFormEl = document.querySelector('#user-form');
-var languageButtonsEl = document.querySelector('#language-buttons');
-var nameInputEl = document.querySelector('#username');
-var repoContainerEl = document.querySelector('#repos-container');
-var repoSearchTerm = document.querySelector('#repo-search-term');
+var userInput = document.querySelector('#userInput');
+var weatherContainerEl = document.querySelector('#weather-container');
+var weatherSearchTerm = document.querySelector('#weather-search-term');
+var previousCityBtn = document.querySelector('#previous-city-btn');
 
 var formSubmitHandler = function (event) {
   event.preventDefault();
 
-  var username = nameInputEl.value.trim();
+  var city = userInput.value.trim();
 
-  if (username) {
-    getUserRepos(username);
+  if (city) {
+    getUserRepos(city);
 
-    repoContainerEl.textContent = '';
-    nameInputEl.value = '';
+    weatherContainerEl.textContent = '';
+    userInput.value = '';
   } else {
-    alert('Please enter a GitHub username');
+    alert('Please enter a city. Example: "Denver" or "New York"');
   }
 };
 
 var buttonClickHandler = function (event) {
-  var language = event.target.getAttribute('data-language');
+  var pCity = event.target.getAttribute('data-city');
 
-  if (language) {
-    getFeaturedRepos(language);
+  if (pCity) {
+    getUserRepos(pCity);
 
-    repoContainerEl.textContent = '';
+    weatherContainerEl.textContent = '';
   }
 };
 
-var getUserRepos = function (user) {
-  var apiUrl = 'https://api.github.com/users/' + user + '/repos';
+var key = "33833f7677a089398d010fc62caf84d6";
+var lat;
+var lon;
+
+
+var getUserRepos = function (city) {
+  var apiUrl = 'http://api.openweathermap.org/geo/1.0/direct?q=' + city + '&limit=5' + '&appid=' + key;
 
   fetch(apiUrl)
     .then(function (response) {
-      if (response.ok) {
-        console.log(response);
-        response.json().then(function (data) {
-          console.log(data);
-          displayRepos(data, user);
-        });
-      } else {
-        alert('Error: ' + response.statusText);
-      }
+      return response.json() 
+    })
+    .then(function(data){
+      lat = data[0].lat;
+      lon = data[0].lon;
+
+      fetch ('https://api.openweathermap.org/data/2.5/onecall?lat=' + lat + '&lon=' + lon + '&units=imperial&exclude=minutely,hourly,alerts&appid=' + key)
+      .then(function (response) {
+        return response.json()
+      })
+      .then(function (data) {
+        console.log(data);
+        var passedData = data;
+        var passedCity = city;
+        createVars(passedData, passedCity)
+      })
     })
     .catch(function (error) {
-      alert('Unable to connect to GitHub');
+      alert('Unable to connect to WeatherStation');
     });
 };
 
-var getFeaturedRepos = function (language) {
-  var apiUrl = 'https://api.github.com/search/repositories?q=' + language + '+is:featured&sort=help-wanted-issues';
+var createVars = function (data, city) {
+  var curUVI = data.current.uvi;
+  var curTemp = data.current.temp;
+  var curHumidity = data.current.humidity;
+  var curWind = data.current.wind_speed;
 
-  fetch(apiUrl).then(function (response) {
-    if (response.ok) {
-      response.json().then(function (data) {
-        displayRepos(data.items, language);
-      });
-    } else {
-      alert('Error: ' + response.statusText);
-    }
-  });
-};
+  var cityEl = document.createElement('h1');
+  cityEl.textContent = city;
+  weatherContainerEl.appendChild(cityEl);
+
+  var tempEl = document.createElement('h3');
+  tempEl.textContent = `Temperature: ${curTemp}`;
+  weatherContainerEl.appendChild(tempEl);
+
+  var windEl = document.createElement('h3');
+  windEl.textContent = `Wind speed: ${curWind}mph`;
+  weatherContainerEl.appendChild(windEl);
+
+  var humidityEl = document.createElement('h3');
+  humidityEl.textContent = `Humidity: ${curHumidity}%`;
+  weatherContainerEl.appendChild(humidityEl);
+
+  var uviEl = document.createElement('h3');
+  uviEl.classList.add('uvi-class');
+  uviEl.textContent = `UV Index: ${curUVI}`;
+  weatherContainerEl.appendChild(uviEl);
+
+  if (curUVI <= 2.9999) {
+    console.log(curUVI);
+    uviEl.style.backgroundColor = "lightgreen";
+    var uviElSub = document.createElement('h4');
+    uviElSub.textContent = "LOW";
+    uviEl.appendChild(uviElSub);
+  } else if (curUVI <= 5.9999) {
+    console.log(curUVI);
+    uviEl.style.backgroundColor = "yellow";
+    var uviElSub = document.createElement('h4');
+    uviElSub.textContent = "MODERATE";
+    uviEl.appendChild(uviElSub);
+  } else if (curUVI <= 7.9999) {
+    console.log(curUVI);
+    uviEl.style.backgroundColor = "orange";
+    var uviElSub = document.createElement('h4');
+    uviElSub.textContent = "HIGH";
+    uviEl.appendChild(uviElSub);
+  } else if (curUVI <= 10.9999) {
+    console.log(curUVI);
+    uviEl.style.backgroundColor = "red";
+    var uviElSub = document.createElement('h4');
+    uviElSub.textContent = "VERY HIGH";
+    uviEl.appendChild(uviElSub);
+  } else if (curUVI > 10.999) {
+    console.log(curUVI);
+    uviEl.style.backgroundColor = "lightpurple";
+    var uviElSub = document.createElement('h4');
+    uviElSub.textContent = "EXTREME";
+    uviEl.appendChild(uviElSub);
+  }
+
+  weatherContainerEl.children.classList.add('children');
+
+}
+
+//   city name, the date, an icon representation of weather conditions, the temperature, the humidity, the wind speed, and the UV index
+// WHEN I view the UV index
+// THEN I am presented with a color that indicates whether the conditions are favorable, moderate, or severe
 
 var displayRepos = function (repos, searchTerm) {
   if (repos.length === 0) {
-    repoContainerEl.textContent = 'No repositories found.';
+    weatherContainerEl.textContent = 'No weather found.';
     return;
   }
 
-  repoSearchTerm.textContent = searchTerm;
+  weatherSearchTerm.textContent = searchTerm;
 
   for (var i = 0; i < repos.length; i++) {
     var repoName = repos[i].owner.login + '/' + repos[i].name;
@@ -95,9 +162,9 @@ var displayRepos = function (repos, searchTerm) {
 
     repoEl.appendChild(statusEl);
 
-    repoContainerEl.appendChild(repoEl);
+    weatherContainerEl.appendChild(repoEl);
   }
 };
 
 userFormEl.addEventListener('submit', formSubmitHandler);
-languageButtonsEl.addEventListener('click', buttonClickHandler);
+previousCityBtn.addEventListener('click', buttonClickHandler);
