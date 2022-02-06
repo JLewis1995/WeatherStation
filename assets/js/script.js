@@ -81,11 +81,16 @@ var createVars = function (data, city) {
   var curTemp = data.current.temp;
   var curHumidity = data.current.humidity;
   var curWind = data.current.wind_speed;
+  var currentdate = moment();
 
   var cityEl = document.createElement("h1");
   cityEl.classList.add("children");
   cityEl.textContent = city;
   weatherContainerEl.append(cityEl);
+
+  weatherContainerEl
+    .append(`<h3> Date: ${currentdate.format("MMMM Do")}`)
+    .addClass("children");
 
   var tempEl = document.createElement("h3");
   tempEl.classList.add("children");
@@ -102,42 +107,31 @@ var createVars = function (data, city) {
   humidityEl.textContent = `Humidity: ${curHumidity}%`;
   weatherContainerEl.append(humidityEl);
 
-  var uviEl = document.createElement("h3");
-  uviEl.classList.add("uvi-class");
-  uviEl.classList.add("children");
+  var uviEl = $("<h3>");
+  uviEl.addClass("uvi-class children");
   uviEl.textContent = `UV Index: ${curUVI}`;
   weatherContainerEl.append(uviEl);
 
   if (curUVI <= 2.9999) {
-    console.log(curUVI);
-    uviEl.style.backgroundColor = "lightgreen";
-    var uviElSub = document.createElement("h4");
-    uviElSub.textContent = "LOW";
-    uviEl.appendChild(uviElSub);
+    uviEl.css("background-color", "lightgreen");
+    var uviElSub = $("<h4>").text("LOW");
+    uviEl.append(uviElSub);
   } else if (curUVI <= 5.9999) {
-    console.log(curUVI);
-    uviEl.style.backgroundColor = "yellow";
-    var uviElSub = document.createElement("h4");
-    uviElSub.textContent = "MODERATE";
-    uviEl.appendChild(uviElSub);
+    uviEl.css("background-color", "yellow");
+    var uviElSub = $("<h4>").text("MODERATE");
+    uviEl.append(uviElSub);
   } else if (curUVI <= 7.9999) {
-    console.log(curUVI);
-    uviEl.style.backgroundColor = "orange";
-    var uviElSub = document.createElement("h4");
-    uviElSub.textContent = "HIGH";
-    uviEl.appendChild(uviElSub);
+    uviEl.css("background-color", "orange");
+    var uviElSub = $("<h4>").text("HIGH");
+    uviEl.append(uviElSub);
   } else if (curUVI <= 10.9999) {
-    console.log(curUVI);
-    uviEl.style.backgroundColor = "red";
-    var uviElSub = document.createElement("h4");
-    uviElSub.textContent = "VERY HIGH";
-    uviEl.appendChild(uviElSub);
+    uviEl.css("background-color", "red");
+    var uviElSub = $("<h4>").text("VERY HIGH");
+    uviEl.append(uviElSub);
   } else if (curUVI > 10.999) {
-    console.log(curUVI);
-    uviEl.style.backgroundColor = "lightpurple";
-    var uviElSub = document.createElement("h4");
-    uviElSub.textContent = "EXTREME";
-    uviEl.appendChild(uviElSub);
+    uviEl.css("background-color", "lightpurple");
+    var uviElSub = $("<h4>").text("EXTREME");
+    uviEl.append(uviElSub);
   }
 };
 
@@ -155,13 +149,6 @@ var createFive = function (data, city) {
     var humidity = nextFive[i].humidity;
     var wind = nextFive[i].wind_speed;
     var curDayId = $(`#day-${[i]}`);
-    console.log(`NEW DAY`);
-    console.log(maxTemp);
-    console.log(minTemp);
-    console.log(humidity);
-    console.log(wind);
-
-    var maxTempEl = $("<h3>");
 
     curDayId.append(
       $(`<h3>Maximum Temperature: ${maxTemp} degrees f.</h3>`).addClass(
