@@ -9,5 +9,5 @@ Additionally, we will store the cities you have searched for so that you can qui
 https://github.com/JLewis1995/WeatherStation
 https://jlewis1995.github.io/WeatherStation/
 
-![Current Weather Example](./Assets/images/current.PNG)
-![Future Weather Example](./Assets/images/future.PNG)
+![Current Weather Example](./assets/images/current.PNG)
+![Future Weather Example](./assets/images/future.PNG)
