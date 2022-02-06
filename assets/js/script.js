@@ -1,7 +1,4 @@
-// need to add local local storage to list - add class btn via javascript - on click reload that city's weather - need to add attribute when pulled from storage that is equal to the value of the city "data-city"
-
-// need to add images for what the weather is like - research to see if API can do this
-
+// create variables
 var userFormEl = $("#user-form");
 var userInput = $("#userInput");
 var weatherContainerEl = $("#weather-container");
@@ -10,14 +7,19 @@ var previousCityDiv = $("#previous-city-div");
 var previousCityList = $("#previous-list");
 var storedCities = [];
 var currentdate = moment();
+var key = "33833f7677a089398d010fc62caf84d6";
+var lat;
+var lon;
 
+// init function to run on page load
 function init() {
+  // remove any listed cities - gather info from local storage and store in working memory
   previousCityList.children().remove();
   var stored = JSON.parse(localStorage.getItem("cities"));
   if (stored !== null) {
     storedCities = stored;
   }
-
+  // display previous cities on the page as buttons - add attribute for future use
   for (let i = 0; i < storedCities.length; i++) {
     var storedCC = storedCities[i];
     var prevCity = $(`<li></li>`);
@@ -29,10 +31,12 @@ function init() {
   }
 }
 
+// function to handle form submit or button click to gather weather
 var formSubmitHandler = function (event) {
   event.preventDefault();
   var city = userInput.val().trim();
 
+  // verify entry is valid - if so add to working memory array and save to local storage. Also call next function
   if (city) {
     storedCities.push(city);
     localStorage.setItem("cities", JSON.stringify(storedCities));
@@ -42,6 +46,7 @@ var formSubmitHandler = function (event) {
   }
 };
 
+// function to handle a click on a previous city - gather the attribute so that we can search that city again
 var pCityClick = function (event) {
   var pCity = event.target.getAttribute("data-city");
 
@@ -50,11 +55,9 @@ var pCityClick = function (event) {
   }
 };
 
-var key = "33833f7677a089398d010fc62caf84d6";
-var lat;
-var lon;
-
+// function to gather lat and lon for that city from one API for use in second API
 var getWeather = function (city) {
+  // remove user input and any previous weather displayed on page
   weatherContainerEl.children().remove();
   userInput.val("");
   var apiUrl =
@@ -64,6 +67,7 @@ var getWeather = function (city) {
     "&appid=" +
     key;
 
+    // fetch for lat lon
   fetch(apiUrl)
     .then(function (response) {
       return response.json();
@@ -72,6 +76,7 @@ var getWeather = function (city) {
       lat = data[0].lat;
       lon = data[0].lon;
 
+      // fetch for weather
       fetch(
         "https://api.openweathermap.org/data/2.5/onecall?lat=" +
           lat +
@@ -83,8 +88,8 @@ var getWeather = function (city) {
         .then(function (response) {
           return response.json();
         })
+        // then to gather info needed from data and pass to other functions
         .then(function (data) {
-          console.log(data);
           var passedData = data;
           var passedCity = city;
           createVars(passedData, passedCity);
@@ -97,7 +102,9 @@ var getWeather = function (city) {
     });
 };
 
+// function to begin using data from APIs
 var createVars = function (data, city) {
+  //variables needed
   var iconNum = data.current.weather[0].icon;
   var iconEl = $(
     `<img src=" http://openweathermap.org/img/wn/${iconNum}.png"  alt="Weather Image">`
@@ -106,6 +113,7 @@ var createVars = function (data, city) {
   var curTemp = data.current.temp;
   var curHumidity = data.current.humidity;
   var curWind = data.current.wind_speed;
+  // creating elements for weather data
   var cityEl = $("<h1>").addClass("children").text(city);
   var tempEl = $("<h3>").addClass("children").text(`Temperature: ${curTemp}`);
   var windEl = $("<h3>").addClass("children").text(`Wind speed: ${curWind}mph`);
@@ -116,6 +124,7 @@ var createVars = function (data, city) {
     .addClass("uvi-class children")
     .text(`UV Index: ${curUVI}`);
 
+    // append all created elements to the container
   weatherContainerEl
     .append(cityEl)
     .append(`<h3> Date: ${currentdate.format("MMMM Do")}`)
@@ -126,6 +135,7 @@ var createVars = function (data, city) {
     .append(humidityEl)
     .append(uviEl);
 
+    // if statement to evaluate uvi index and assign colors and text associated with index rating
   if (curUVI <= 2.9999) {
     var uviElSub = $("<h4>").text("LOW");
     uviEl.css("background-color", "lightgreen").append(uviElSub);
@@ -144,10 +154,12 @@ var createVars = function (data, city) {
   }
 };
 
+// function to create next five days of weather
 var createFive = function (data, city) {
   $(".five").text("");
   var nextFive = data.daily;
 
+  // for loop to utilize data from each day in the array
   for (let i = 0; i < 5; i++) {
     var maxTemp = nextFive[i].temp.max;
     var minTemp = nextFive[i].temp.min;
@@ -159,8 +171,10 @@ var createFive = function (data, city) {
     var curDateWF = curDate.format("MMMM Do");
     var iconNum = data.daily[i].weather[0].icon;
 
+    // append weather data to applicable cards
     curDayId
       .append($(`<h3>Date: ${curDateWF}</h3>`).addClass("childrenFive"))
+      .append($(`<h3>Weather in ${city}:</h3>`).addClass("childrenFive"))
       .append(
         $(
           `<img src=" http://openweathermap.org/img/wn/${iconNum}.png"  alt="Weather Image">`
@@ -181,6 +195,7 @@ var createFive = function (data, city) {
   }
 };
 
+// call functions
 userFormEl.on("submit", formSubmitHandler);
 previousCityList.on("click", ".previous", pCityClick);
 init();
