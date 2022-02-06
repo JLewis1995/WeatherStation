@@ -12,6 +12,7 @@ var storedCities = [];
 var currentdate = moment();
 
 function init() {
+  previousCityList.children().remove();
   var stored = JSON.parse(localStorage.getItem("cities"));
   if (stored !== null) {
     storedCities = stored;
@@ -144,6 +145,7 @@ var createVars = function (data, city) {
 };
 
 var createFive = function (data, city) {
+  $(".five").text("");
   var nextFive = data.daily;
 
   for (let i = 0; i < 5; i++) {
