@@ -1,9 +1,9 @@
 :root {
-    --primary: #ccdad1;
+    --primary: rgb(227, 235, 255);
     --secondary: #9caea9;
     --tertiary: #788585;
-    --light-dark: #6f6866;
-    --dark: #302e38;
+    --light-dark: #68666f;
+    --dark: rgb(2, 2, 165);
     --border-radius: .3rem;
   }
   
@@ -199,6 +199,9 @@
 
   .previous {
     font-size: 2rem;
+    border-radius: 4rem;
+    background-color:var(--dark);
+    color: white;
   }
   
   /* HEIGHT / WIDTH UTILS */

@@ -9,32 +9,33 @@ var weatherSearchTerm = $("#weather-search-term");
 var previousCityDiv = $("#previous-city-div");
 var previousCityList = $("#previous-list");
 var storedCities = [];
+var currentdate = moment();
 
 function init() {
   var stored = JSON.parse(localStorage.getItem("cities"));
   if (stored !== null) {
     storedCities = stored;
   }
-console.log(storedCities);
+  console.log(storedCities);
   for (let i = 0; i < storedCities.length; i++) {
     var storedCC = storedCities[i];
     var prevCity = $(`<li></li>`);
-    var prevCityBtn = $(`<button>${storedCC}</button>`).addClass("previous").attr("data-city", storedCC);
+    var prevCityBtn = $(`<button>${storedCC}</button>`)
+      .addClass("previous")
+      .attr("data-city", storedCC);
     prevCity.append(prevCityBtn);
     $("#previous-list").append(prevCity);
-    
   }
 }
-
 
 var formSubmitHandler = function (event) {
   event.preventDefault();
   var city = userInput.val().trim();
 
-    if (city) {
-      storedCities.push(city);
-      localStorage.setItem("cities", JSON.stringify(storedCities));
-      getUserRepos(city);
+  if (city) {
+    storedCities.push(city);
+    localStorage.setItem("cities", JSON.stringify(storedCities));
+    getUserRepos(city);
   } else {
     alert('Please enter a city. Example: "Denver" or "New York"');
   }
@@ -43,7 +44,6 @@ var formSubmitHandler = function (event) {
 var pCityClick = function (event) {
   // event.preventDefault();
   var pCity = event.target.getAttribute("data-city");
-  console.log(pCity);
 
   if (pCity) {
     getUserRepos(pCity);
@@ -101,7 +101,6 @@ var createVars = function (data, city) {
   var curTemp = data.current.temp;
   var curHumidity = data.current.humidity;
   var curWind = data.current.wind_speed;
-  var currentdate = moment();
 
   var cityEl = document.createElement("h1");
   cityEl.classList.add("children");
@@ -164,23 +163,26 @@ var createFive = function (data, city) {
     var humidity = nextFive[i].humidity;
     var wind = nextFive[i].wind_speed;
     var curDayId = $(`#day-${[i]}`);
+    var num = i + 1;
+    var curDate = moment().add(num, "days").endOf("day");
+    var curDateWF = curDate.format("MMMM Do");
+    console.log(curDate);
+    console.log(num);
 
-    curDayId.append(
-      $(`<h3>Maximum Temperature: ${maxTemp} degrees f.</h3>`).addClass(
-        "childrenFive"
+    curDayId
+      .append($(`<h3>Date: ${curDateWF}</h3>`).addClass("childrenFive"))
+      .append(
+        $(`<h3>Maximum Temperature: ${maxTemp} degrees f.</h3>`).addClass(
+          "childrenFive"
+        )
       )
-    );
-    curDayId.append(
-      $(`<h3>Min Temperature: ${minTemp} degrees f.</h3>`).addClass(
-        "childrenFive"
+      .append(
+        $(`<h3>Min Temperature: ${minTemp} degrees f.</h3>`).addClass(
+          "childrenFive"
+        )
       )
-    );
-    curDayId.append(
-      $(`<h3>Wind Speed: ${wind} mph</h3>`).addClass("childrenFive")
-    );
-    curDayId.append(
-      $(`<h3>Humidity: ${humidity}%</h3>`).addClass("childrenFive")
-    );
+      .append($(`<h3>Wind Speed: ${wind} mph</h3>`).addClass("childrenFive"))
+      .append($(`<h3>Humidity: ${humidity}%</h3>`).addClass("childrenFive"));
   }
 };
 
