@@ -107,7 +107,7 @@ var createVars = function (data, city) {
   //variables needed
   var iconNum = data.current.weather[0].icon;
   var iconEl = $(
-    `<img src=" http://openweathermap.org/img/wn/${iconNum}.png"  alt="Weather Image">`
+    `<img src=" https://openweathermap.org/img/wn/${iconNum}.png"  alt="Weather Image">`
   );
   var curUVI = data.current.uvi;
   var curTemp = data.current.temp;
