@@ -7,7 +7,7 @@ var userInput = $("#userInput");
 var weatherContainerEl = $("#weather-container");
 var weatherSearchTerm = $("#weather-search-term");
 var previousCityDiv = $("#previous-city-div");
-var previousCityList = $("#previous-city-list");
+var previousCityList = $("#previous-list");
 var storedCities = [];
 
 function init() {
@@ -43,6 +43,7 @@ var formSubmitHandler = function (event) {
 var pCityClick = function (event) {
   // event.preventDefault();
   var pCity = event.target.getAttribute("data-city");
+  console.log(pCity);
 
   if (pCity) {
     getUserRepos(pCity);
@@ -54,7 +55,7 @@ var lat;
 var lon;
 
 var getUserRepos = function (city) {
-  weatherContainerEl.val("");
+  weatherContainerEl.children().remove();
   userInput.val("");
   var apiUrl =
     "http://api.openweathermap.org/geo/1.0/direct?q=" +
