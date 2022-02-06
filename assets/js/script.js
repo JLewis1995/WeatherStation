@@ -16,7 +16,7 @@ function init() {
   if (stored !== null) {
     storedCities = stored;
   }
-  console.log(storedCities);
+
   for (let i = 0; i < storedCities.length; i++) {
     var storedCC = storedCities[i];
     var prevCity = $(`<li></li>`);
@@ -35,18 +35,17 @@ var formSubmitHandler = function (event) {
   if (city) {
     storedCities.push(city);
     localStorage.setItem("cities", JSON.stringify(storedCities));
-    getUserRepos(city);
+    getWeather(city);
   } else {
     alert('Please enter a city. Example: "Denver" or "New York"');
   }
 };
 
 var pCityClick = function (event) {
-  // event.preventDefault();
   var pCity = event.target.getAttribute("data-city");
 
   if (pCity) {
-    getUserRepos(pCity);
+    getWeather(pCity);
   }
 };
 
@@ -54,7 +53,7 @@ var key = "33833f7677a089398d010fc62caf84d6";
 var lat;
 var lon;
 
-var getUserRepos = function (city) {
+var getWeather = function (city) {
   weatherContainerEl.children().remove();
   userInput.val("");
   var apiUrl =
@@ -84,6 +83,7 @@ var getUserRepos = function (city) {
           return response.json();
         })
         .then(function (data) {
+          console.log(data);
           var passedData = data;
           var passedCity = city;
           createVars(passedData, passedCity);
@@ -97,60 +97,49 @@ var getUserRepos = function (city) {
 };
 
 var createVars = function (data, city) {
+  var iconNum = data.current.weather[0].icon;
+  var iconEl = $(
+    `<img src=" http://openweathermap.org/img/wn/${iconNum}.png"  alt="Weather Image">`
+  );
   var curUVI = data.current.uvi;
   var curTemp = data.current.temp;
   var curHumidity = data.current.humidity;
   var curWind = data.current.wind_speed;
-
-  var cityEl = document.createElement("h1");
-  cityEl.classList.add("children");
-  cityEl.textContent = city;
-  weatherContainerEl.append(cityEl);
+  var cityEl = $("<h1>").addClass("children").text(city);
+  var tempEl = $("<h3>").addClass("children").text(`Temperature: ${curTemp}`);
+  var windEl = $("<h3>").addClass("children").text(`Wind speed: ${curWind}mph`);
+  var humidityEl = $("<h3>")
+    .addClass("children")
+    .text(`Humidity: ${curHumidity}%`);
+  var uviEl = $("<h3>")
+    .addClass("uvi-class children")
+    .text(`UV Index: ${curUVI}`);
 
   weatherContainerEl
+    .append(cityEl)
     .append(`<h3> Date: ${currentdate.format("MMMM Do")}`)
-    .addClass("children");
-
-  var tempEl = document.createElement("h3");
-  tempEl.classList.add("children");
-  tempEl.textContent = `Temperature: ${curTemp}`;
-  weatherContainerEl.append(tempEl);
-
-  var windEl = document.createElement("h3");
-  windEl.classList.add("children");
-  windEl.textContent = `Wind speed: ${curWind}mph`;
-  weatherContainerEl.append(windEl);
-
-  var humidityEl = document.createElement("h3");
-  humidityEl.classList.add("children");
-  humidityEl.textContent = `Humidity: ${curHumidity}%`;
-  weatherContainerEl.append(humidityEl);
-
-  var uviEl = $("<h3>");
-  uviEl.addClass("uvi-class children");
-  uviEl.textContent = `UV Index: ${curUVI}`;
-  weatherContainerEl.append(uviEl);
+    .addClass("children")
+    .append(iconEl)
+    .append(tempEl)
+    .append(windEl)
+    .append(humidityEl)
+    .append(uviEl);
 
   if (curUVI <= 2.9999) {
-    uviEl.css("background-color", "lightgreen");
     var uviElSub = $("<h4>").text("LOW");
-    uviEl.append(uviElSub);
+    uviEl.css("background-color", "lightgreen").append(uviElSub);
   } else if (curUVI <= 5.9999) {
-    uviEl.css("background-color", "yellow");
     var uviElSub = $("<h4>").text("MODERATE");
-    uviEl.append(uviElSub);
+    uviEl.css("background-color", "yellow").append(uviElSub);
   } else if (curUVI <= 7.9999) {
-    uviEl.css("background-color", "orange");
     var uviElSub = $("<h4>").text("HIGH");
-    uviEl.append(uviElSub);
+    uviEl.css("background-color", "orange").append(uviElSub);
   } else if (curUVI <= 10.9999) {
-    uviEl.css("background-color", "red");
     var uviElSub = $("<h4>").text("VERY HIGH");
-    uviEl.append(uviElSub);
+    uviEl.css("background-color", "red").append(uviElSub);
   } else if (curUVI > 10.999) {
-    uviEl.css("background-color", "lightpurple");
     var uviElSub = $("<h4>").text("EXTREME");
-    uviEl.append(uviElSub);
+    uviEl.css("background-color", "lightpurple").append(uviElSub);
   }
 };
 
@@ -166,11 +155,15 @@ var createFive = function (data, city) {
     var num = i + 1;
     var curDate = moment().add(num, "days").endOf("day");
     var curDateWF = curDate.format("MMMM Do");
-    console.log(curDate);
-    console.log(num);
+    var iconNum = data.daily[i].weather[0].icon;
 
     curDayId
       .append($(`<h3>Date: ${curDateWF}</h3>`).addClass("childrenFive"))
+      .append(
+        $(
+          `<img src=" http://openweathermap.org/img/wn/${iconNum}.png"  alt="Weather Image">`
+        )
+      )
       .append(
         $(`<h3>Maximum Temperature: ${maxTemp} degrees f.</h3>`).addClass(
           "childrenFive"

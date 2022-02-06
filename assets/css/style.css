@@ -197,11 +197,24 @@
     padding: 1rem;
   }
 
+  #previous-list {
+    list-style-type: none;
+    text-align: center;
+  }
+
+  #future-weather-container {
+    margin-top: 1rem;
+    width: 100%;
+  }
+
   .previous {
-    font-size: 2rem;
+    margin: .25rem;
+    margin-left: -2rem;
+    font-size: 3rem;
+    padding: .5rem;
     border-radius: 4rem;
     background-color:var(--dark);
-    color: white;
+    color: white;    
   }
   
   /* HEIGHT / WIDTH UTILS */
