@@ -15,8 +15,8 @@ var formSubmitHandler = function (event) {
   if (city) {
     getUserRepos(city);
 
-    weatherContainerEl.textContent = "";
-    userInput.value = "";
+    weatherContainerEl.val("");
+    userInput.val("");
   } else {
     alert('Please enter a city. Example: "Denver" or "New York"');
   }
