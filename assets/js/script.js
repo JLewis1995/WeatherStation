@@ -1,5 +1,7 @@
 // need to add local local storage to list - add class btn via javascript - on click reload that city's weather - need to add attribute when pulled from storage that is equal to the value of the city "data-city"
 
+// need to add images for what the weather is like - research to see if API can do this
+
 var userFormEl = $("#user-form");
 var userInput = $("#userInput");
 var weatherContainerEl = $("#weather-container");
@@ -28,7 +30,7 @@ var buttonClickHandler = function (event) {
   if (pCity) {
     getUserRepos(pCity);
 
-    weatherContainerEl.textContent = "";
+    weatherContainerEl.text("");
   }
 };
 
@@ -64,7 +66,6 @@ var getUserRepos = function (city) {
           return response.json();
         })
         .then(function (data) {
-          console.log(data);
           var passedData = data;
           var passedCity = city;
           createVars(passedData, passedCity);
@@ -135,13 +136,8 @@ var createVars = function (data, city) {
   }
 };
 
-//   city name, the date, an icon representation of weather conditions, the temperature, the humidity, the wind speed, and the UV index
-// WHEN I view the UV index
-// THEN I am presented with a color that indicates whether the conditions are favorable, moderate, or severe
-
 var createFive = function (data, city) {
   var nextFive = data.daily;
-  console.log(nextFive);
 
   for (let i = 0; i < 5; i++) {
     var maxTemp = nextFive[i].temp.max;
@@ -170,4 +166,4 @@ var createFive = function (data, city) {
 };
 
 userFormEl.on("submit", formSubmitHandler);
-previousCityDiv.on("click", buttonClickHandler);
+previousCityDiv.on("click", buttonClickHandler); //need to add clarifier like done in instructer example from like week 3 with button then many buttons
