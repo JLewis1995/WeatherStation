@@ -8,29 +8,44 @@ var weatherContainerEl = $("#weather-container");
 var weatherSearchTerm = $("#weather-search-term");
 var previousCityDiv = $("#previous-city-div");
 var previousCityList = $("#previous-city-list");
+var storedCities = [];
+
+function init() {
+  var stored = JSON.parse(localStorage.getItem("cities"));
+  if (stored !== null) {
+    storedCities = stored;
+  }
+console.log(storedCities);
+  for (let i = 0; i < storedCities.length; i++) {
+    var storedCC = storedCities[i];
+    var prevCity = $(`<li></li>`);
+    var prevCityBtn = $(`<button>${storedCC}</button>`).addClass("previous").attr("data-city", storedCC);
+    prevCity.append(prevCityBtn);
+    $("#previous-list").append(prevCity);
+    
+  }
+}
+
 
 var formSubmitHandler = function (event) {
   event.preventDefault();
-
   var city = userInput.val().trim();
 
-  if (city) {
-    getUserRepos(city);
-
-    weatherContainerEl.val("");
-    userInput.val("");
+    if (city) {
+      storedCities.push(city);
+      localStorage.setItem("cities", JSON.stringify(storedCities));
+      getUserRepos(city);
   } else {
     alert('Please enter a city. Example: "Denver" or "New York"');
   }
 };
 
-var buttonClickHandler = function (event) {
+var pCityClick = function (event) {
+  // event.preventDefault();
   var pCity = event.target.getAttribute("data-city");
 
   if (pCity) {
     getUserRepos(pCity);
-
-    weatherContainerEl.text("");
   }
 };
 
@@ -39,6 +54,8 @@ var lat;
 var lon;
 
 var getUserRepos = function (city) {
+  weatherContainerEl.val("");
+  userInput.val("");
   var apiUrl =
     "http://api.openweathermap.org/geo/1.0/direct?q=" +
     city +
@@ -70,6 +87,7 @@ var getUserRepos = function (city) {
           var passedCity = city;
           createVars(passedData, passedCity);
           createFive(passedData, passedCity);
+          init();
         });
     })
     .catch(function (error) {
@@ -166,4 +184,5 @@ var createFive = function (data, city) {
 };
 
 userFormEl.on("submit", formSubmitHandler);
-previousCityDiv.on("click", buttonClickHandler); //need to add clarifier like done in instructer example from like week 3 with button then many buttons
+previousCityList.on("click", ".previous", pCityClick);
+init();
