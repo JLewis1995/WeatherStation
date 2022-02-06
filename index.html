@@ -32,19 +32,34 @@
 
       <div class="card">
         <h3 class="card-header text-uppercase">Previous Cities:</h3>
-        <div id="previous-city-btn" class="card-body">
-          <ul></ul>
+        <div id="previous-city-div" class="card-body">
+          <ul id="previous-list"></ul>
         </div>
       </div>
     </div>
 
+    <div class="col-12 col-md-8 card">
+      <h2 class="subtitle">Showing Current Weather for: <span id="weather-search-term"></span></h2>
+      <div id="weather-container"></div>
+    </div>
+
     <div class="col-12 col-md-8">
-      <h2 class="subtitle">Showing Weather for: <span id="weather-search-term"></span></h2>
-      <div id="weather-container" class="card"></div>
+      <h2 class="subtitle">Weather for the Next 5 Days:</h2>
+      <div id="future-weather-container" class="flex-row justify-space-between">
+        <div class="card col-2" id="day-0"></div>
+        <div class="card col-2" id="day-1"></div>
+        <div class="card col-2" id="day-2"></div>
+        <div class="card col-2" id="day-3"></div>
+        <div class="card col-2" id="day-4"></div>
+      </div>
     </div>
   </main>
 
-  <script src="./assets/js/homepage.js"></script>
+  <script
+  src="https://code.jquery.com/jquery-3.6.0.js"
+  integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+  crossorigin="anonymous"></script>
+  <script src="./assets/js/script.js"></script>
 </body>
 
 </html>
