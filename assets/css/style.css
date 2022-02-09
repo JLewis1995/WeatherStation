@@ -196,6 +196,8 @@
 
   .children {
     padding-left: 2rem;
+    font-size: 1.7rem;
+    text-align: left;
   }
 
   .childrenFive {

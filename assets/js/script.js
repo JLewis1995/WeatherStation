@@ -116,7 +116,7 @@ var createVars = function (data, city) {
   var curWind = data.current.wind_speed;
   // creating elements for weather data
   var cityEl = $("<h1>").addClass("children").text(city);
-  var tempEl = $("<h3>").addClass("children").text(`Temperature: ${curTemp}`);
+  var tempEl = $("<h3>").addClass("children").text(`Temperature: ${curTemp} degrees fahrenheit`);
   var windEl = $("<h3>").addClass("children").text(`Wind speed: ${curWind}mph`);
   var humidityEl = $("<h3>")
     .addClass("children")
