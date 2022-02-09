@@ -15,6 +15,7 @@ var lon;
 function init() {
   // remove any listed cities - gather info from local storage and store in working memory
   previousCityList.children().remove();
+  $('.five').hide();
   var stored = JSON.parse(localStorage.getItem("cities"));
   if (stored !== null) {
     storedCities = stored;
@@ -92,9 +93,9 @@ var getWeather = function (city) {
         .then(function (data) {
           var passedData = data;
           var passedCity = city;
+          init();
           createVars(passedData, passedCity);
           createFive(passedData, passedCity);
-          init();
         });
     })
     .catch(function (error) {
@@ -156,6 +157,7 @@ var createVars = function (data, city) {
 
 // function to create next five days of weather
 var createFive = function (data, city) {
+  $(".five").show();
   $(".five").text("");
   var nextFive = data.daily;
 

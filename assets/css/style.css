@@ -93,13 +93,18 @@
   }
   
   .hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
     padding: 3% 4%;
     background-color: var(--dark);
     color: var(--primary);
   }
   
   .hero p {
-    max-width: 75%;
+    justify-content: center;
+    text-align: center;
   }
   
   .app-title {
