@@ -101,7 +101,7 @@ var createVars = function (data, city) {
   var iconNum = data.current.weather[0].icon;
   var iconEl = $(
     `<img src=" https://openweathermap.org/img/wn/${iconNum}.png"  alt="Weather Image">`
-  );
+  ).css("padding-left", "1.5rem");
   var curUVI = data.current.uvi;
   var curTemp = data.current.temp;
   var curHumidity = data.current.humidity;
@@ -118,12 +118,11 @@ var createVars = function (data, city) {
   var uviEl = $("<h3>")
     .addClass("uvi-class children")
     .text(`UV Index: ${curUVI}`);
-
+  var dateEl = $(`<h3> Date: ${currentdate.format("MMMM Do")}`).addClass("children");
   // append all created elements to the container
   weatherContainerEl
     .append(cityEl)
-    .append(`<h3> Date: ${currentdate.format("MMMM Do")}`)
-    .addClass("children")
+    .append(dateEl)
     .append(iconEl)
     .append(tempEl)
     .append(windEl)
