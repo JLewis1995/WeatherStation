@@ -15,11 +15,9 @@ var lon;
 function init() {
   // remove any listed cities - gather info from local storage and store in working memory
   previousCityList.children().remove();
-  $('.five').hide();
+  $(".five").hide();
   var stored = JSON.parse(localStorage.getItem("cities"));
-  if (stored !== null) {
-    storedCities = stored;
-  }
+  stored !== null ? (storedCities = stored) : (storedCities = []);
   // display previous cities on the page as buttons - add attribute for future use
   for (let i = 0; i < storedCities.length; i++) {
     var storedCC = storedCities[i];
@@ -38,22 +36,17 @@ var formSubmitHandler = function (event) {
   var city = userInput.val().trim();
 
   // verify entry is valid - if so add to working memory array and save to local storage. Also call next function
-  if (city) {
-    storedCities.push(city);
-    localStorage.setItem("cities", JSON.stringify(storedCities));
-    getWeather(city);
-  } else {
-    alert('Please enter a city. Example: "Denver" or "New York"');
-  }
+  city
+    ? (storedCities.push(city),
+      localStorage.setItem("cities", JSON.stringify(storedCities)),
+      getWeather(city))
+    : alert('Please enter a city. Example: "Denver" or "New York"');
 };
-
 // function to handle a click on a previous city - gather the attribute so that we can search that city again
 var pCityClick = function (event) {
   var pCity = event.target.getAttribute("data-city");
 
-  if (pCity) {
-    getWeather(pCity);
-  }
+  pCity ? getWeather(pCity) : alert("Please contact site admin");
 };
 
 // function to gather lat and lon for that city from one API for use in second API
@@ -67,8 +60,7 @@ var getWeather = function (city) {
     "&limit=5" +
     "&appid=" +
     key;
-
-    // fetch for lat lon
+  // fetch for lat lon
   fetch(apiUrl)
     .then(function (response) {
       return response.json();
@@ -116,7 +108,9 @@ var createVars = function (data, city) {
   var curWind = data.current.wind_speed;
   // creating elements for weather data
   var cityEl = $("<h1>").addClass("children").text(city);
-  var tempEl = $("<h3>").addClass("children").text(`Temperature: ${curTemp} degrees fahrenheit`);
+  var tempEl = $("<h3>")
+    .addClass("children")
+    .text(`Temperature: ${curTemp} degrees fahrenheit`);
   var windEl = $("<h3>").addClass("children").text(`Wind speed: ${curWind}mph`);
   var humidityEl = $("<h3>")
     .addClass("children")
@@ -125,7 +119,7 @@ var createVars = function (data, city) {
     .addClass("uvi-class children")
     .text(`UV Index: ${curUVI}`);
 
-    // append all created elements to the container
+  // append all created elements to the container
   weatherContainerEl
     .append(cityEl)
     .append(`<h3> Date: ${currentdate.format("MMMM Do")}`)
@@ -136,7 +130,7 @@ var createVars = function (data, city) {
     .append(humidityEl)
     .append(uviEl);
 
-    // if statement to evaluate uvi index and assign colors and text associated with index rating
+  // if statement to evaluate uvi index and assign colors and text associated with index rating
   if (curUVI <= 2.9999) {
     var uviElSub = $("<h4>").text("LOW");
     uviEl.css("background-color", "lightgreen").append(uviElSub);
